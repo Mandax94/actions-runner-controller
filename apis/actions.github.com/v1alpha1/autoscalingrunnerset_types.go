@@ -36,11 +36,7 @@ import (
 // +kubebuilder:subresource:status
 // +kubebuilder:printcolumn:JSONPath=".spec.minRunners",name=Minimum Runners,type=integer
 // +kubebuilder:printcolumn:JSONPath=".spec.maxRunners",name=Maximum Runners,type=integer
-// +kubebuilder:printcolumn:JSONPath=".status.currentRunners",name=Current Runners,type=integer
 // +kubebuilder:printcolumn:JSONPath=".status.phase",name=Phase,type=string
-// +kubebuilder:printcolumn:JSONPath=".status.pendingEphemeralRunners",name=Pending Runners,type=integer
-// +kubebuilder:printcolumn:JSONPath=".status.runningEphemeralRunners",name=Running Runners,type=integer
-// +kubebuilder:printcolumn:JSONPath=".status.failedEphemeralRunners",name=Failed Runners,type=integer
 
 // AutoscalingRunnerSet is the Schema for the autoscalingrunnersets API
 type AutoscalingRunnerSet struct {
@@ -317,23 +313,7 @@ type HistogramMetric struct {
 // AutoscalingRunnerSetStatus defines the observed state of AutoscalingRunnerSet
 type AutoscalingRunnerSetStatus struct {
 	// +optional
-	// +kubebuilder:validation:Minimum=0
-	CurrentRunners int `json:"currentRunners"`
-
-	// +optional
 	Phase AutoscalingRunnerSetPhase `json:"phase"`
-
-	// EphemeralRunner counts separated by the stage ephemeral runners are in, taken from the EphemeralRunnerSet
-
-	// +optional
-	// +kubebuilder:validation:Minimum=0
-	PendingEphemeralRunners int `json:"pendingEphemeralRunners"`
-	// +optional
-	// +kubebuilder:validation:Minimum=0
-	RunningEphemeralRunners int `json:"runningEphemeralRunners"`
-	// +optional
-	// +kubebuilder:validation:Minimum=0
-	FailedEphemeralRunners int `json:"failedEphemeralRunners"`
 }
 
 type AutoscalingRunnerSetPhase string

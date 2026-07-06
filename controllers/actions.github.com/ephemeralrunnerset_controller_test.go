@@ -136,17 +136,11 @@ var _ = Describe("Test EphemeralRunnerSet controller", func() {
 			// Check if the status stay 0
 			Consistently(
 				func() (int, error) {
-					runnerSet := new(v1alpha1.EphemeralRunnerSet)
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: ephemeralRunnerSet.Name, Namespace: ephemeralRunnerSet.Namespace}, runnerSet)
-					if err != nil {
-						return -1, err
-					}
-
-					return int(runnerSet.Status.CurrentReplicas), nil
+					return countOwnedEphemeralRunners(ctx, k8sClient, ephemeralRunnerSet.Namespace, ephemeralRunnerSet.Name)
 				},
 				ephemeralRunnerSetTestTimeout,
 				ephemeralRunnerSetTestInterval,
-			).Should(BeEquivalentTo(0), "EphemeralRunnerSet status should be 0")
+			).Should(BeEquivalentTo(0), "EphemeralRunnerSet should have 0 runners")
 
 			// Scaling up the EphemeralRunnerSet
 			updated := created.DeepCopy()
@@ -190,17 +184,11 @@ var _ = Describe("Test EphemeralRunnerSet controller", func() {
 			// Check if the status is updated
 			Eventually(
 				func() (int, error) {
-					runnerSet := new(v1alpha1.EphemeralRunnerSet)
-					err := k8sClient.Get(ctx, client.ObjectKey{Name: ephemeralRunnerSet.Name, Namespace: ephemeralRunnerSet.Namespace}, runnerSet)
-					if err != nil {
-						return -1, err
-					}
-
-					return int(runnerSet.Status.CurrentReplicas), nil
+					return countOwnedEphemeralRunners(ctx, k8sClient, ephemeralRunnerSet.Namespace, ephemeralRunnerSet.Name)
 				},
 				ephemeralRunnerSetTestTimeout,
 				ephemeralRunnerSetTestInterval,
-			).Should(BeEquivalentTo(5), "EphemeralRunnerSet status should be 5")
+			).Should(BeEquivalentTo(5), "EphemeralRunnerSet should have 5 runners")
 		})
 	})
 
@@ -1184,11 +1172,7 @@ var _ = Describe("Test EphemeralRunnerSet controller", func() {
 			).Should(BeTrue(), "Failed to eventually update to one pending, one running and one failed")
 
 			desiredStatus := v1alpha1.EphemeralRunnerSetStatus{
-				Phase:                   v1alpha1.EphemeralRunnerSetPhaseRunning,
-				CurrentReplicas:         3,
-				PendingEphemeralRunners: 1,
-				RunningEphemeralRunners: 1,
-				FailedEphemeralRunners:  1,
+				Phase: v1alpha1.EphemeralRunnerSetPhaseRunning,
 			}
 			Eventually(
 				func() (v1alpha1.EphemeralRunnerSetStatus, error) {
@@ -1227,11 +1211,7 @@ var _ = Describe("Test EphemeralRunnerSet controller", func() {
 			).Should(BeEquivalentTo(1), "Failed to eventually scale down")
 
 			desiredStatus = v1alpha1.EphemeralRunnerSetStatus{
-				CurrentReplicas:         1,
-				PendingEphemeralRunners: 0,
-				RunningEphemeralRunners: 0,
-				FailedEphemeralRunners:  1,
-				Phase:                   v1alpha1.EphemeralRunnerSetPhaseRunning,
+				Phase: v1alpha1.EphemeralRunnerSetPhaseRunning,
 			}
 
 			Eventually(
@@ -1251,11 +1231,7 @@ var _ = Describe("Test EphemeralRunnerSet controller", func() {
 			Expect(err).To(BeNil(), "Failed to delete failed ephemeral runner")
 
 			desiredStatus = v1alpha1.EphemeralRunnerSetStatus{
-				CurrentReplicas:         0,
-				PendingEphemeralRunners: 0,
-				RunningEphemeralRunners: 0,
-				FailedEphemeralRunners:  0,
-				Phase:                   v1alpha1.EphemeralRunnerSetPhaseRunning,
+				Phase: v1alpha1.EphemeralRunnerSetPhaseRunning,
 			}
 			Eventually(
 				func() (v1alpha1.EphemeralRunnerSetStatus, error) {
@@ -1699,4 +1675,21 @@ func listEphemeralRunnersAndRemoveFinalizers(ctx context.Context, k8sClient clie
 	}
 	list.Items = liveItems
 	return nil
+}
+
+func countOwnedEphemeralRunners(ctx context.Context, k8sClient client.Client, namespace, ownerName string) (int, error) {
+	runnerList := new(v1alpha1.EphemeralRunnerList)
+	if err := listEphemeralRunnersAndRemoveFinalizers(ctx, k8sClient, runnerList, namespace); err != nil {
+		return -1, err
+	}
+
+	count := 0
+	for i := range runnerList.Items {
+		owner := metav1.GetControllerOfNoCopy(&runnerList.Items[i])
+		if owner != nil && owner.Kind == "EphemeralRunnerSet" && owner.Name == ownerName {
+			count++
+		}
+	}
+
+	return count, nil
 }
