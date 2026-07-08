@@ -50,7 +50,7 @@ type EphemeralRunnerReconciler struct {
 	Log            logr.Logger
 	Scheme         *runtime.Scheme
 	PublishMetrics bool
-	ResourceBuilder
+	*ResourceBuilder
 }
 
 // precompute backoff durations for failed ephemeral runners

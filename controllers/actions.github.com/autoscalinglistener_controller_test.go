@@ -57,7 +57,7 @@ var _ = Describe("Test AutoScalingListener controller", func() {
 			Client:          mgr.GetClient(),
 			Scheme:          mgr.GetScheme(),
 			Log:             logf.Log,
-			ResourceBuilder: rb,
+			ResourceBuilder: &rb,
 		}
 		err := controller.SetupWithManager(mgr)
 		Expect(err).NotTo(HaveOccurred(), "failed to setup controller")
@@ -600,7 +600,7 @@ var _ = Describe("Test AutoScalingListener customization", func() {
 			Client:          mgr.GetClient(),
 			Scheme:          mgr.GetScheme(),
 			Log:             logf.Log,
-			ResourceBuilder: rb,
+			ResourceBuilder: &rb,
 		}
 		err := controller.SetupWithManager(mgr)
 		Expect(err).NotTo(HaveOccurred(), "failed to setup controller")
@@ -929,7 +929,7 @@ var _ = Describe("Test AutoScalingListener controller with proxy", func() {
 			Client:          mgr.GetClient(),
 			Scheme:          mgr.GetScheme(),
 			Log:             logf.Log,
-			ResourceBuilder: rb,
+			ResourceBuilder: &rb,
 		}
 		err := controller.SetupWithManager(mgr)
 		Expect(err).NotTo(HaveOccurred(), "failed to setup controller")
@@ -954,11 +954,11 @@ var _ = Describe("Test AutoScalingListener controller with proxy", func() {
 
 		proxy := &v1alpha1.ProxyConfig{
 			HTTP: &v1alpha1.ProxyServerConfig{
-				Url:                 "http://localhost:8080",
+				URL:                 "http://localhost:8080",
 				CredentialSecretRef: "proxy-credentials",
 			},
 			HTTPS: &v1alpha1.ProxyServerConfig{
-				Url:                 "https://localhost:8443",
+				URL:                 "https://localhost:8443",
 				CredentialSecretRef: "proxy-credentials",
 			},
 			NoProxy: []string{
@@ -1134,7 +1134,7 @@ var _ = Describe("Test AutoScalingListener controller with template modification
 			Client:          mgr.GetClient(),
 			Scheme:          mgr.GetScheme(),
 			Log:             logf.Log,
-			ResourceBuilder: rb,
+			ResourceBuilder: &rb,
 		}
 		err := controller.SetupWithManager(mgr)
 		Expect(err).NotTo(HaveOccurred(), "failed to setup controller")
@@ -1259,7 +1259,7 @@ var _ = Describe("Test GitHub Server TLS configuration", func() {
 			Client:          mgr.GetClient(),
 			Scheme:          mgr.GetScheme(),
 			Log:             logf.Log,
-			ResourceBuilder: rb,
+			ResourceBuilder: &rb,
 		}
 		err = controller.SetupWithManager(mgr)
 		Expect(err).NotTo(HaveOccurred(), "failed to setup controller")

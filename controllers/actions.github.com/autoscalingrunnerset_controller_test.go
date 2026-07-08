@@ -72,7 +72,7 @@ var _ = Describe("Test AutoScalingRunnerSet controller", Ordered, func() {
 			Log:                                logf.Log,
 			ControllerNamespace:                autoscalingNS.Name,
 			DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-			ResourceBuilder: ResourceBuilder{
+			ResourceBuilder: &ResourceBuilder{
 				SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient(
 					scalefake.WithClient(
 						scalefake.NewClient(
@@ -1058,7 +1058,7 @@ var _ = Describe("Test AutoScalingController updates", Ordered, func() {
 				Log:                                logf.Log,
 				ControllerNamespace:                autoscalingNS.Name,
 				DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(mgr.GetClient(), multiClient),
 				},
 			}
@@ -1175,7 +1175,7 @@ var _ = Describe("Test AutoscalingController creation failures", Ordered, func()
 				Log:                                logf.Log,
 				ControllerNamespace:                autoscalingNS.Name,
 				DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient()),
 				},
 			}
@@ -1302,7 +1302,7 @@ var _ = Describe("Test client optional configuration", Ordered, func() {
 				Log:                                logf.Log,
 				ControllerNamespace:                autoscalingNS.Name,
 				DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(mgr.GetClient(), multiclient.NewScaleset()),
 				},
 			}
@@ -1339,7 +1339,7 @@ var _ = Describe("Test client optional configuration", Ordered, func() {
 					RunnerGroup:        "testgroup",
 					Proxy: &v1alpha1.ProxyConfig{
 						HTTP: &v1alpha1.ProxyServerConfig{
-							Url: proxy.URL,
+							URL: proxy.URL,
 						},
 					},
 					Template: corev1.PodTemplateSpec{
@@ -1417,7 +1417,7 @@ var _ = Describe("Test client optional configuration", Ordered, func() {
 					RunnerGroup:        "testgroup",
 					Proxy: &v1alpha1.ProxyConfig{
 						HTTP: &v1alpha1.ProxyServerConfig{
-							Url:                 "http://test:password@" + proxy.Listener.Addr().String(),
+							URL:                 "http://test:password@" + proxy.Listener.Addr().String(),
 							CredentialSecretRef: "proxy-credentials",
 						},
 					},
@@ -1497,7 +1497,7 @@ var _ = Describe("Test client optional configuration", Ordered, func() {
 				Log:                                logf.Log,
 				ControllerNamespace:                autoscalingNS.Name,
 				DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient(
 						scalefake.WithClient(
 							scalefake.NewClient(
@@ -1744,7 +1744,7 @@ var _ = Describe("Test external permissions cleanup", Ordered, func() {
 			Log:                                logf.Log,
 			ControllerNamespace:                autoscalingNS.Name,
 			DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-			ResourceBuilder: ResourceBuilder{
+			ResourceBuilder: &ResourceBuilder{
 				SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient()),
 			},
 		}
@@ -1904,7 +1904,7 @@ var _ = Describe("Test external permissions cleanup", Ordered, func() {
 			Log:                                logf.Log,
 			ControllerNamespace:                autoscalingNS.Name,
 			DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-			ResourceBuilder: ResourceBuilder{
+			ResourceBuilder: &ResourceBuilder{
 				SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient()),
 			},
 		}
@@ -2114,7 +2114,7 @@ var _ = Describe("Test resource version and build version mismatch", func() {
 			Log:                                logf.Log,
 			ControllerNamespace:                autoscalingNS.Name,
 			DefaultRunnerScaleSetListenerImage: "ghcr.io/actions/arc",
-			ResourceBuilder: ResourceBuilder{
+			ResourceBuilder: &ResourceBuilder{
 				SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient()),
 			},
 		}

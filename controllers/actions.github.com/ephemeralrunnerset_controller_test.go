@@ -54,7 +54,7 @@ var _ = Describe("Test EphemeralRunnerSet controller", func() {
 			Client: mgr.GetClient(),
 			Scheme: mgr.GetScheme(),
 			Log:    logf.Log,
-			ResourceBuilder: ResourceBuilder{
+			ResourceBuilder: &ResourceBuilder{
 				SecretResolver: secretresolver.New(mgr.GetClient(), fake.NewMultiClient(
 					fake.WithClient(
 						fake.NewClient(
@@ -1275,7 +1275,7 @@ var _ = Describe("Test EphemeralRunnerSet controller with proxy settings", func(
 			Client: mgr.GetClient(),
 			Scheme: mgr.GetScheme(),
 			Log:    logf.Log,
-			ResourceBuilder: ResourceBuilder{
+			ResourceBuilder: &ResourceBuilder{
 				SecretResolver: secretresolver.New(mgr.GetClient(), multiclient.NewScaleset()),
 			},
 		}
@@ -1313,11 +1313,11 @@ var _ = Describe("Test EphemeralRunnerSet controller with proxy settings", func(
 					RunnerScaleSetID:   100,
 					Proxy: &v1alpha1.ProxyConfig{
 						HTTP: &v1alpha1.ProxyServerConfig{
-							Url:                 "http://proxy.example.com",
+							URL:                 "http://proxy.example.com",
 							CredentialSecretRef: secretCredentials.Name,
 						},
 						HTTPS: &v1alpha1.ProxyServerConfig{
-							Url:                 "https://proxy.example.com",
+							URL:                 "https://proxy.example.com",
 							CredentialSecretRef: secretCredentials.Name,
 						},
 						NoProxy: []string{"example.com", "example.org"},
@@ -1496,7 +1496,7 @@ var _ = Describe("Test EphemeralRunnerSet controller with proxy settings", func(
 					RunnerScaleSetID:   100,
 					Proxy: &v1alpha1.ProxyConfig{
 						HTTP: &v1alpha1.ProxyServerConfig{
-							Url:                 proxy.URL,
+							URL:                 proxy.URL,
 							CredentialSecretRef: "proxy-credentials",
 						},
 					},
@@ -1593,7 +1593,7 @@ var _ = Describe("Test EphemeralRunnerSet controller with custom root CA", func(
 			Client: mgr.GetClient(),
 			Scheme: mgr.GetScheme(),
 			Log:    logf.Log,
-			ResourceBuilder: ResourceBuilder{
+			ResourceBuilder: &ResourceBuilder{
 				SecretResolver: secretresolver.New(mgr.GetClient(), multiclient.NewScaleset()),
 			},
 		}

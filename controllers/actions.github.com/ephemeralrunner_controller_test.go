@@ -110,7 +110,7 @@ var _ = Describe("EphemeralRunner", func() {
 				Client: mgr.GetClient(),
 				Scheme: mgr.GetScheme(),
 				Log:    logf.Log,
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient(
 						scalefake.WithClient(
 							scalefake.NewClient(
@@ -1215,7 +1215,7 @@ var _ = Describe("EphemeralRunner", func() {
 				Client: mgr.GetClient(),
 				Scheme: mgr.GetScheme(),
 				Log:    logf.Log,
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(
 						mgr.GetClient(),
 						scalefake.NewMultiClient(
@@ -1301,7 +1301,7 @@ var _ = Describe("EphemeralRunner", func() {
 				Client: mgr.GetClient(),
 				Scheme: mgr.GetScheme(),
 				Log:    logf.Log,
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient(
 						scalefake.WithClient(
 							scalefake.NewClient(
@@ -1325,7 +1325,7 @@ var _ = Describe("EphemeralRunner", func() {
 
 		It("uses an actions client with proxy transport", func() {
 			// Use an actual client
-			controller.ResourceBuilder = ResourceBuilder{
+			controller.ResourceBuilder = &ResourceBuilder{
 				SecretResolver: secretresolver.New(
 					mgr.GetClient(),
 					multiclient.NewScaleset(),
@@ -1367,7 +1367,7 @@ var _ = Describe("EphemeralRunner", func() {
 			ephemeralRunner.Spec.GitHubConfigURL = "http://example.com/org/repo"
 			ephemeralRunner.Spec.Proxy = &v1alpha1.ProxyConfig{
 				HTTP: &v1alpha1.ProxyServerConfig{
-					Url:                 proxy.URL,
+					URL:                 proxy.URL,
 					CredentialSecretRef: "proxy-credentials",
 				},
 			}
@@ -1388,10 +1388,10 @@ var _ = Describe("EphemeralRunner", func() {
 			ephemeralRunner := newExampleRunner("test-runner", autoScalingNS.Name, configSecret.Name)
 			ephemeralRunner.Spec.Proxy = &v1alpha1.ProxyConfig{
 				HTTP: &v1alpha1.ProxyServerConfig{
-					Url: "http://proxy.example.com:8080",
+					URL: "http://proxy.example.com:8080",
 				},
 				HTTPS: &v1alpha1.ProxyServerConfig{
-					Url: "http://proxy.example.com:8080",
+					URL: "http://proxy.example.com:8080",
 				},
 				NoProxy: []string{"example.com"},
 			}
@@ -1484,7 +1484,7 @@ var _ = Describe("EphemeralRunner", func() {
 				Client: mgr.GetClient(),
 				Scheme: mgr.GetScheme(),
 				Log:    logf.Log,
-				ResourceBuilder: ResourceBuilder{
+				ResourceBuilder: &ResourceBuilder{
 					SecretResolver: secretresolver.New(mgr.GetClient(), scalefake.NewMultiClient()),
 				},
 			}
@@ -1518,7 +1518,7 @@ var _ = Describe("EphemeralRunner", func() {
 			defer server.Close()
 
 			// Use an actual client
-			controller.ResourceBuilder = ResourceBuilder{
+			controller.ResourceBuilder = &ResourceBuilder{
 				SecretResolver: secretresolver.New(
 					mgr.GetClient(),
 					multiclient.NewScaleset(),

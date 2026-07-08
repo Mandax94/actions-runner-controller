@@ -52,7 +52,7 @@ type EphemeralRunnerSetReconciler struct {
 	Log            logr.Logger
 	Scheme         *runtime.Scheme
 	PublishMetrics bool
-	ResourceBuilder
+	*ResourceBuilder
 }
 
 // +kubebuilder:rbac:groups=actions.github.com,resources=ephemeralrunnersets,verbs=get;list;watch;create;update;patch;delete
